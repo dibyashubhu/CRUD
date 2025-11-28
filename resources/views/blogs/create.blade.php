@@ -30,12 +30,21 @@ Use the form below to publish a new blog post on website. Please provide a clear
                 <input type="file" name="image"
                        class="border p-2 rounded-lg">
 
-                <select name="blog_category_id" class="border p-2 rounded-lg" required>
+                {{-- <select name="blog_category_id" class="border p-2 rounded-lg" required>
                     <option value="">Select Blog Category</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                     @endforeach
-                </select>
+                </select> --}}
+                
+
+                  <select name="blog_category_id" required>
+    <option value="">Select Category</option>
+    @foreach($categories as $cat)
+        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+    @endforeach
+</select>
+
 
                 <button
                     class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">

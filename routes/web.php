@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\auth\AuthController;
+use App\Http\Middleware\ValidUser;
 
 
 
@@ -10,13 +11,21 @@ use App\Http\Controllers\BlogController;
 
 Route::view('/','welcome');
 
-Route::resource('blogs', BlogController::class);
-// Route::resource('blogs', BlogController::class)
-//     ->only(['index', 'show']);  // public view routes
+// Route::resource('blogs', BlogController::class);
+Route::get('blogs', [BlogController::class, 'index'])->name('blogs.index');
+// Route::get('blogs/create', [BlogController::class, 'create'])->name('blogs.create');
+Route::post('blogs', [BlogController::class, 'store'])->name('blogs.store');
+Route::get('blogs/{blog}/show', [BlogController::class, 'show'])->name('blogs.show');
+Route::get('blogs/contact', [BlogController::class, 'contact'])->name('blogs.contact');
 
-// Route::resource('blogs', BlogController::class)
-//     ->except(['index', 'show'])
-//     ->middleware('auth');      // protected routes
+
+Route::middleware([ValidUser::class])->group(function () {
+    Route::get('blogs/create', [BlogController::class, 'create'])->name('blogs.create');
+    Route::get('blogs/{blog}/edit', [BlogController::class, 'edit'])->name('blogs.edit');
+    Route::put('blogs/{blog}', [BlogController::class, 'update'])->name('blogs.update');
+    Route::delete('blogs/{blog}', [BlogController::class, 'destroy'])->name('blogs.destroy');
+});
+
 
 Route::get('/contact',[BlogController::class,'contact']);
 

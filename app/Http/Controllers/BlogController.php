@@ -10,7 +10,7 @@ class BlogController extends Controller
 {
     public function index()
     {
-        $blogs = Blog::with('category')->latest()->paginate(10);
+        $blogs = Blog::with('category')->latest()->paginate(6);
         return view('blogs.index', compact('blogs'));
     }
 
@@ -27,7 +27,8 @@ class BlogController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'content' => 'required',
-            'blog_category_id' => 'required|exists:blog_categories,id',
+            // 'blog_category_id' => 'required|exists:blog_categories,id',
+             'blog_category_id' => 'required',
             'image' => 'nullable|image|max:2048'
         ]);
 
@@ -42,12 +43,18 @@ class BlogController extends Controller
         return redirect()->route('blogs.index')->with('success', 'Blog created successfully.');
     }
 
-    public function edit(Blog $blog)
-    {
-        $categories = BlogCategory::all();
-        return view('blogs.edit', compact('blog', 'categories'));
-    }
-
+    // public function edit(Blog $blog)
+    // {
+    //     $categories = BlogCategory::all();
+    //     return view('blogs.edit', compact('blog', 'categories'));
+    // }
+      
+    public function edit($id)
+{
+    $blog = Blog::with('category')->findOrFail($id);
+    $categories = BlogCategory::all();
+    return view('blogs.edit', compact('blog','categories'));
+}
     public function update(Request $request, Blog $blog)
     {
         $request->validate([
@@ -55,7 +62,8 @@ class BlogController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'content' => 'required',
-            'blog_category_id' => 'required|exists:blog_categories,id',
+            // 'blog_category_id' => 'required|exists:blog_categories,id',
+             'blog_category_id' => 'required',
             'image' => 'nullable|image|max:2048'
         ]);
 
@@ -75,7 +83,12 @@ class BlogController extends Controller
         $blog->delete();
         return redirect()->route('blogs.index')->with('success', 'Blog deleted successfully.');
     }
-
+    
+    public function show(Blog $blog)
+        {
+            // $blog is automatically fetched by ID from the URL due to route model binding
+            return view('blogs.show', compact('blog'));
+        }
 
     public function contact(){
         return view('blogs.contact');

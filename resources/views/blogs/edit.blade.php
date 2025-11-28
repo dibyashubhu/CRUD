@@ -12,12 +12,15 @@
                 <input type="text" name="title" value="{{ $blog->title }}"
                        class="border p-2 rounded-lg" required>
                 <br>
+                Name:
                 <input type="text" name="name" value="{{ $blog->name }}"
                        class="border p-2 rounded-lg" required>
                 <br>
+                Category:
                 <input type="text" name="category" value="{{ $blog->category }}"
                        class="border p-2 rounded-lg" required>
                  <br>
+                 Description:
                 <textarea name="description"
                           class="border p-2 rounded-lg">{{ $blog->description }}</textarea>
                       <br>
@@ -26,17 +29,28 @@
                     {{ $blog->content }}
                 </textarea>
                <br>
+               IMage:
                 <input type="file" name="image"
                        class="border p-2 rounded-lg">
                <br>
-                <select name="blog_category_id" class="border p-2 rounded-lg" required>
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}"
+               category id:
+                   <select name="blog_category_id" required>
+    @foreach($categories as $cat)
+        <option value="{{ $cat->id }}" {{ $blog->blog_category_id == $cat->id ? 'selected' : '' }}>
+            {{ $cat->name }}
+        </option>
+    @endforeach
+</select>
+
+                {{-- <select name="blog_category_id" class="border p-2 rounded-lg" required>
+                     @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}" 
                             {{ $blog->blog_category_id == $cat->id ? 'selected' : '' }}>
                             {{ $cat->name }}
                         </option>
                     @endforeach
-                </select>
+
+                </select> --}}
                <br> <br>
                 <button
                     class="w-full px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700">
