@@ -1,323 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Welcome</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
- 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="csrf-token" content="{{ csrf_token() }}">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Login & Signup with jQuery toggle</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.tailwindcss.com"></script>
 
-  <style>
-    .form-bg {
-      background-color: rgba(114, 115, 126, 0.938);
-      /* backdrop-filter: blur(8px); */
-      height: 100%;
-      overflow: hidden;
-    }
-    .form-scroll {
-      overflow-y: auto;
-      max-height: 100%;
-      padding-right: 8px;
-    }
-    .cursor-pointer {
-      cursor: pointer;
-    }
-  </style>
+	<style>
+		.hidden {
+			display: none;
+		}
+
+		.active-tab {
+			border-bottom: 2px solid #2563eb;
+			/* blue-600 */
+			color: #2563eb;
+			font-weight: 600;
+		}
+	</style>
 </head>
-<body
-  class="min-h-screen flex items-center justify-center bg-cover bg-center"
-  style="background-image: url('https://imgs.search.brave.com/6vauSkCcKJ2aHdg9R-OR0-E4SQ_p5nelxPIeBvzSTUw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9zdW5zZXQtaGlt/YWxheWEtbXQtYW1h/ZGFibGFtLWV2ZXJl/c3QtYmFzZS1jYW1w/LXRyZWtraW5nLXNv/bHVraHVtYnUtbmVw/YWxfNzIzMTIzLTM2/Ny5qcGc_c2VtdD1h/aXNfaHlicmlkJnc9/NzQwJnE9ODA');"
->
 
-  {{-- @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-<script>
-    @if($errors->any())
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: '{{ $errors->first() }}',  // Shows first error message
-            timer: 3000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-             width:'250px',
-             height:'200px'
-        });
-    @endif
+	<div class="bg-white p-8 rounded shadow-md w-full max-w-3xl">
 
-    @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: '{{ session('success') }}',
-            timer: 3000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            width:'250px',
-            height:'200px'
-        });
-    @endif
-</script> --}}
+		<div class="flex space-x-6 mb-8 border-b">
+			<button id="loginTab" class="pb-2 font-semibold text-gray-700 border-b-2 border-transparent active-tab">
+				Login
+			</button>
+			<button id="signupTab" class="pb-2 font-semibold text-gray-700 border-b-2 border-transparent">
+				Signup
+			</button>
+		</div>
+
+		<!-- Login Form -->
+		<form id="loginForm">
+			<div id="loginerrorMessages" style="color: red; margin-top: 10px;"></div>
+			<div class="mb-4">
+				<label for="loginEmail" class="block mb-1 font-medium">Email</label>
+				<input id="loginEmail" type="email" name="email" required
+					class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600" />
+				<div class="text-red-600 text-sm error-text"></div>
+			</div>
+			<div class="mb-6">
+				<label for="loginPassword" class="block mb-1 font-medium">Password</label>
+				<input id="loginPassword" type="password" name="password" required
+					class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600" />
+				<div class="text-red-600 text-sm error-text"></div>
+			</div>
+			<button type="submit" id="btnLogin"
+				class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+				Login
+			</button>
+		
+		</form>
+		
+
+		<!-- Signup Form -->
+		<form id="signupForm" class="hidden">
+			 <div id="signuperrorMessages" style="color: red; margin-bottom: 10px;"></div>
+			<div class="mb-4">
+				<label for="signupName" class="block mb-1 font-medium">Name</label>
+				<input id="signupName" type="text" name="name" required
+					class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-600" />
+				<div class="text-red-600 text-sm error-text"></div>
+			</div>
+
+			<div class="mb-4">
+				<label for="signupEmail" class="block mb-1 font-medium">Email</label>
+				<input id="signupEmail" type="email" name="email" required
+					class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-600" />
+				<div class="text-red-600 text-sm error-text"></div>
+			</div>
+			<div class="mb-4">
+				<label for="signupPassword" class="block mb-1 font-medium">Password</label>
+				<input id="signupPassword" type="password" name="password" required
+					class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-600" />
+				<div class="text-red-600 text-sm error-text"></div>
+			</div>
+			<div class="mb-6">
+				<label for="signupPasswordConfirm" class="block mb-1 font-medium">Confirm Password</label>
+				<input id="signupPasswordConfirm" type="password" name="password_confirmation" required
+					class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-600" />
+				<div class="text-red-600 text-sm error-text"></div>
+			</div>
+			<button type="submit" id="btnSignup"
+				class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
+				Signup
+			</button>
+		</form>
+		
+	</div>
+
+	<script>
+		$(document).ready(function () {
+
+			$.ajaxSetup({
+				headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				}
+			});
+			
+			$('#loginTab').click(function () {
+				// Show login form, hide signup
+				$('#loginForm').show();
+				$('#signupForm').hide();
+
+				// Toggle active tab styles
+				$('#loginTab').addClass('active-tab');
+				$('#signupTab').removeClass('active-tab');
+			});
+
+			$('#signupTab').click(function () {
+				// Show signup form, hide login
+				$('#signupForm').show();
+				$('#loginForm').hide();
+
+				// Toggle active tab styles
+				$('#signupTab').addClass('active-tab');
+				$('#loginTab').removeClass('active-tab');
+			});
+
+
+			$(document)
+				.off('click', '#btnLogin')
+				.on('click', '#btnLogin', function (e) {
+					e.preventDefault();
+
+					console.log("test");
 
 
 
+					const data = $("#loginForm").serializeArray();
+					console.log("login data ",data)
+					 let hasErrors = false;
+                    let dataObj = {};
 
-  <div
-    class="grid grid-cols-2 gap-0 w-full max-w-4xl h-[580px] rounded-xl shadow-lg overflow-hidden"
-  >
-    <!-- Left side -->
-    <div class="form-bg p-8  flex flex-col justify-center h-full">
-      <div id="register-form" class="form-scroll">
-          <p class="mt-2 text-center text-white text-sm">
-          Want to continue without Login?
-          <span class="underline cursor-pointer font-semibold"
-            >  <a href="/blogs">Continue</a>  </span
-          >
-        </p>
-        <p class=" text-2xl text-center font-bold text-white"> OR</p>
-        <p class=" text-center text-white  mb-2">Create your Account </p>
-        <form action="{{ url('/register') }}" method="POST" class="space-y-3">
-           @csrf
-            @error('name')
-    <p class="text-red-800 text-sm mb-0">{{ $message }}</p>
-@enderror
-          <input
-            type="text"
-            placeholder="Name"
-            name="name"
-            class="w-full p-1 rounded  bg-opacity-10  focus:outline-none"
-             value="{{ old('name') }}" class="border @error('name') border-red-500 @enderror"
-             
-          />
-          @error('email')
-    <p class="text-red-800 text-sm">{{ $message }}</p>
-@enderror
-          <input
-            type="email"
-            placeholder="Email"
-            name="email"
-            {{-- class="w-full p-2 rounded bg-white bg-opacity-30 placeholder-white text-white focus:outline-none" --}}
-            class="w-full p-1 rounded  bg-opacity-10  focus:outline-none"
-           value="{{ old('email') }}" class="border @error('email') border-red-500 @enderror"
-          />
-          @error('password')
-    <p class="text-red-800 text-sm">{{ $message }}</p>
-@enderror
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            {{-- class="w-full p-2 rounded bg-white bg-opacity-30 placeholder-white text-white focus:outline-none" --}}
-            class="w-full p-1 rounded  bg-opacity-10  focus:outline-none"
-           value="{{ old('password') }}" class="border @error('password') border-red-500 @enderror"
-          />
-            @error('password_confirmation')
-    <p class="text-red-800 text-sm">{{ $message }}</p>
-@enderror
-           <input
-            type="password"
-            placeholder="Confirm Password"
-            name="password_confirmation"
-            {{-- class="w-full p-2 rounded bg-white bg-opacity-30 placeholder-white text-white focus:outline-none" --}}
-            class="w-full p-1 rounded  bg-opacity-10  focus:outline-none"
-           value="{{ old('password_confirmation') }}" class="border @error('password_confirmation') border-red-500 @enderror"
-          />
-           
-          <button
-            type="submit"
-            class="w-full bg-green-600 text-white hover:bg-green-700 py-2 rounded font-semibold"
-          >
-            Sign Up
-          </button>
-        </form>
-        <p class="mt-4 text-center text-white text-sm">
-          Already have an account?
-          <span id="show-login" class="underline cursor-pointer font-semibold"
-            >Login</span
-          >
-        </p>
-      
-      </div>
+					$.each(data, function(_, field) {
+					dataObj[field.name] = field.value.trim();
+						});
+     
+					let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					if (!dataObj.email) {
+					 $('#loginEmail').next('.error-text').text('Email is required.');
+					  hasErrors = true;
+					} else if (!emailRegex.test(dataObj.email)) {
+					  $('#loginEmail').next('.error-text').text('Invalid email format.');
+                      hasErrors = true;
+					}
 
-      <div id="login-form" class="hidden form-scroll">
-        <h2 class="text-3xl text-white font-bold mb-4">Welcome Back!</h2>
-        <form action="{{ url('/login') }}" method="POST"  class="space-y-3">
-          @csrf
-          <input
-            type="email"
-            placeholder="Email"
-            name="email"
-            {{-- class="w-full p-2 rounded bg-white bg-opacity-30 placeholder-white text-white focus:outline-none" --}}
-            class="w-full p-2 rounded  bg-opacity-10  focus:outline-none"
-          />
-          
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            {{-- class="w-full p-2 rounded bg-white bg-opacity-30 placeholder-white text-white focus:outline-none" --}}
-            class="w-full p-2 rounded  bg-opacity-10  focus:outline-none"
-          />
-          <button
-            type="submit"
-            class="w-full bg-blue-600 text-white hover:bg-blue-700 py-2 rounded font-semibold"
-          >
-            Login
-          </button>
-        </form>
-        <p class="mt-4 text-center text-white text-sm">
-          Don't have an account?
-          <span id="show-register" class="underline cursor-pointer font-semibold"
-            >Register</span
-          >
-        </p>
+					// Validate Password
+					if (!dataObj.password) {
+					  $('#loginPassword').next('.error-text').text('Password is required.');
+					  hasErrors=true;
+					}
+					
+                    if (hasErrors) return;
+
+					console.log({data});
+					$.ajax({
+						url: '/login', // Your login URL in backend
+						type: 'POST',
+						data: data,
+						success: function (response) {
+							 if (response.success) {
+                            alert(response.message);
+                        // Redirect user after successful login
+                        window.location.href = response.redirect_url;
+                    }
+						},
+						error: function (xhr) {
+							// Handle error response
+							$('.error-text').text('');
+							if (xhr.status === 422) {
+								let errors = xhr.responseJSON.errors;
+								if (errors.email) $('#loginEmail').next('.error-text').text(errors.email[0]);
+								if (errors.password) $('#loginPassword').next('.error-text').text(errors.password[0]);
+							} else {
+								$('#loginPassword').next('.error-text').text("Invalid credentials.");
+							}
+						}
+					});
+
+
+					});
+
+
+
+               $(document)
+				.off('click', '#btnSignup')
+				.on('click', '#btnSignup', function (e) {
+					
+					e.preventDefault();
+
+					console.log("test signup");
+
+
+
+					const data = $("#signupForm").serializeArray();
+					console.log("signup data ",data)
+					 let hasErrors = false;
+                    let dataObj = {};
+                    $('.error-text').text('');
+					$.each(data, function(_, field) {
+					dataObj[field.name] = field.value.trim();
+					
+					});
+					console.log("stataa",dataObj);
+
+					// Validate Name
+					if (!dataObj.name) {
+					 $('#signupName').next('.error-text').text('Name is required.');
+					  hasErrors = true;
+					}
+
+					// Validate Email
+					let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					if (!dataObj.email) {
+					  $('#signupEmail').next('.error-text').text('Email is required.');
+					   hasErrors = true;
+					} else if (!emailRegex.test(dataObj.email)) {
+					  $('#signupEmail').next('.error-text').text('Invalid email format.');
+					   hasErrors = true;
+					}
+
+					// Validate Password
+					if (!dataObj.password) {
+					  $('#signupPassword').next('.error-text').text('Password is required.');
+					   hasErrors = true;
+					} else if (dataObj.password.length < 6) {
+					 $('#signupPassword').next('.error-text').text('Password must be at least 6 characters.');
+					  hasErrors = true;
+					}
+
+					// Validate Confirm Password
+					if (dataObj.password !== dataObj.password_confirmation) {
+					 $('#signupPasswordConfirm').next('.error-text').text('Passwords do not match.');
+					  hasErrors = true;
+					}
+
+					// Show errors or proceed
+					// if (errors.length > 0) {
+					// 	$('#signuperrorMessages').html(errors.join("<br>"));
+					// 	} else {
+					// 	$('#signuperrorMessages').html('');
+					// 	}
+                  if (hasErrors) return;
+				
         
-      </div>
-    </div>  
+                 
+					console.log({data});
+					$.ajax({
+						url: '/register', // Your login URL in backend
+						type: 'POST',
+						data: data,
+						success: function (response) {
+							 if (response.success) {
+								alert(response.message);
+								// Switch to login form
+								$('#signupForm').hide();
+								$('#loginForm').show();
+								$('#signupForm')[0].reset();
+                   			 }
+							
+						},
+						error: function (xhr) {
+							// Handle error response
+							 $('.error-text').text('');
+							if (xhr.status === 422) {
+								// Validation error
+								 let errors = xhr.responseJSON.errors;
+								  $.each(errors, function(field, messages) {
+								let input = $(`[name="${field}"]`);
+								input.next('.error-text').text(messages[0]);
+							});
+							} else {
+									alert('Something went wrong. Please try again.');
+							    }
+						}
+						
 
-    <!-- Right side -->
-    <div class="h-full">
-      <img
-        src="https://imgs.search.brave.com/Y-lu0KZ4Bv1-RWHZRaj9SwGvRnvKkLW_x23zGHKJ4K0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA4LzEyLzI5LzA4/LzM2MF9GXzgxMjI5/MDg3N19tVzJreVJB/c3RhcnZUbHpzNTlp/QjlZUDRENXlhcThL/YS5qcGc"
-        alt="Welcome Image"
-        class="object-cover h-full w-full"
-      />
-    </div>
-  </div>
-
-  <script>
-    const registerForm = document.getElementById('register-form');
-    const loginForm = document.getElementById('login-form');
-    const showLogin = document.getElementById('show-login');
-    const showRegister = document.getElementById('show-register');
-
-    showLogin.addEventListener('click', () => {
-      registerForm.classList.add('hidden');
-      loginForm.classList.remove('hidden');
-    });  
-
-    showRegister.addEventListener('click', () => {
-      loginForm.classList.add('hidden');
-      registerForm.classList.remove('hidden');
-    });
-  </script>
+					});
 
 
+					});
 
-@if(session('showLogin'))
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    let registerForm = document.getElementById('register-form');
-    let loginForm = document.getElementById('login-form');
 
-    if(registerForm && loginForm){
-        registerForm.classList.add('hidden');
-        loginForm.classList.remove('hidden');
-    }
-});
-</script>
-@endif
+				});
+				
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('form');
-  const nameInput = form.name;
-  const emailInput = form.email;
-  const passwordInput = form.password;
-  const confirmInput = form.password_confirmation;
+				
 
-  function validateName() {
-    clearError(nameInput);
-    const val = nameInput.value.trim();
-    if (!val) return showError(nameInput, 'Nameyyyy is required');
-    if (!/^[a-zA-Z\s]+$/.test(val)) return showError(nameInput, 'Name can only contain letters and spaces');
-    return true;
-  }
+        
 
-  function validateEmail() {
-    clearError(emailInput);
-    const val = emailInput.value.trim();
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!val) return showError(emailInput, 'Email is required');
-    if (!emailPattern.test(val)) return showError(emailInput, 'Email is invalid');
-    return true;
-  }
-
-  function validatePassword() {
-    clearError(passwordInput);
-    const val = passwordInput.value;
-    if (!val) return showError(passwordInput, 'Password is required');
-    if (val.length < 8) return showError(passwordInput, 'Password must be at least 8 characters');
-    return true;
-  }
-
-  function validateConfirm() {
-    clearError(confirmInput);
-    const val = confirmInput.value;
-    if (val !== passwordInput.value) return showError(confirmInput, 'Passwords do not match');
-    return true;
-  }
-
-  function showError(input, message) {
-    if (input.nextElementSibling && input.nextElementSibling.classList.contains('error-msg')) {
-      input.nextElementSibling.innerText = message;
-    } else {
-      const error = document.createElement('p');
-      error.classList.add('text-red-800', 'text-sm', 'error-msg', 'mt-1');
-      error.innerText = message;
-      input.classList.add('border-red-500');
-      input.insertAdjacentElement('afterend', error);
-    }
-    input.classList.add('border-red-500');
-    return false;
-  }
-
-  function clearError(input) {
-    if (input.nextElementSibling && input.nextElementSibling.classList.contains('error-msg')) {
-      input.nextElementSibling.remove();
-    }
-    input.classList.remove('border-red-500');
-  }
-
-  // Add event listeners for live validation (input + blur)
-  nameInput.addEventListener('input', validateName);
-  nameInput.addEventListener('blur', validateName);
-
-  emailInput.addEventListener('input', validateEmail);
-  emailInput.addEventListener('blur', validateEmail);
-
-  passwordInput.addEventListener('input', () => {
-    validatePassword();
-    validateConfirm();
-  });
-  passwordInput.addEventListener('blur', () => {
-    validatePassword();
-    validateConfirm();
-  });
-
-  confirmInput.addEventListener('input', validateConfirm);
-  confirmInput.addEventListener('blur', validateConfirm);
-
-  form.addEventListener('submit', (e) => {
-    const isNameValid = validateName();
-    const isEmailValid = validateEmail();
-    const isPasswordValid = validatePassword();
-    const isConfirmValid = validateConfirm();
-
-    if (!(isNameValid && isEmailValid && isPasswordValid && isConfirmValid)) {
-      e.preventDefault();
-    }
-  });
-});
-
-</script>
-
+	</script>
 
 </body>
-</html>
 
+</html>

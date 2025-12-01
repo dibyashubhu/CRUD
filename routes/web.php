@@ -32,7 +32,7 @@ Route::get('/contact',[BlogController::class,'contact']);
 Route::get('send-email',[ContactController::class,'sendEmail']);
 Route::post('send-email',[ContactController::class,'sendEmail']);
 
-Route::get('/login',[AuthController::class,'showLogin']);
+// Route::get('/login',[AuthController::class,'showLogin']);
 Route::post('/login',[AuthController::class,'login']);
 
 
