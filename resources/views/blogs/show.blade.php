@@ -3,6 +3,7 @@
 @section('content')
     <div class="container mx-auto px-4 py-6 max-w-3xl">
 
+
         <div class="bg-white shadow-md rounded-2xl p-6">
 
             <h1 class="text-4xl font-bold mb-4">{{ $blog->title }}</h1>
@@ -15,17 +16,9 @@
                 <strong>Category Name:</strong> {{ $blog->category }}
             </p>
 
-            <p class="text-gray-700 mb-2">
-
-
+            {{-- <p class="text-gray-700 mb-2">
             <p><strong>Category:</strong> {{ $blog->category->name ?? 'Uncategorized' }}</p>
-
-
-            </p>
-
-
-
-
+            </p> --}}
             @if($blog->image)
                 <div class="mb-6">
                     <img src="{{ asset('storage/' . $blog->image) }}" alt="{{ $blog->title }}"
@@ -63,12 +56,49 @@
                 @endif
 
 
-                <a href="{{ url()->previous() }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+                {{-- <a href="{{ url()->previous() }}"
+                    class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
                     Back
-                </a>
+                </a> --}}
             </div>
+
+
+
+            @foreach($blog->comments as $comment)
+                <div class="border p-3 mb-2 rounded">
+                    <strong>{{ $comment->user->name }}</strong>
+                    <small class="text-gray-500">{{ $comment->created_at->diffForHumans() }}</small>
+                    <p>{{ $comment->comment }}</p>
+                    <!--  comment form-->
+                    <form action="{{ route('comments.like', $comment->id) }}" method="POST" class="inline-block like-form">
+                        @csrf
+                        <button type="submit" class="text-blue-600">
+                            {{ $comment->isLikedByUser(Auth::id()) ? 'Unlike' : 'Like' }}
+                        </button>
+                        <span>{{ $comment->likes()->count() }}like</span>
+                    </form>
+
+                </div>
+                 
+            @endforeach
+
+            <!-- comment form -->
+
+            <h4>Add a comment</h4>
+            <form action="{{ route('comments.store', $blog->id) }}" method="POST">
+                @csrf
+                <div>
+                    <textarea name="comment" rows="1" required class="w-full border rounded p-2"></textarea>
+                </div>
+                <button type="submit" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded">Post Comment</button>
+            </form>
+
+
 
         </div>
 
+
+
     </div>
+
 @endsection

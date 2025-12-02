@@ -47,18 +47,19 @@ class AuthController extends Controller
         if ($user) {
             return response()->json([
                 'success' => true,
-                'message' => 'Registration successful! Please login.'
+                'message' => 'Registration successful! Please login.',
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Registration failed. Please try again.'
+            'message' => 'Registration failed. Please try again.',
         ], 500);
 
     }
-
- 
+    public function showLogin(){
+         return view('welcome');
+    }
 
     public function login(Request $request)
     {
@@ -69,7 +70,6 @@ class AuthController extends Controller
             'email.email' => 'Please enter a valid email address.',
 
             'password.required' => 'Password is required.',
-            
 
         ];
 
@@ -81,21 +81,20 @@ class AuthController extends Controller
         // Check if user exists with that email
         $user = User::where('email', $credentials['email'])->first();
 
-       if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
-                'errors' => ['email' => ['Email does not match any account.']]
+                'errors' => ['email' => ['Email does not match any account.']],
             ], 422);
         }
 
-         if (!Auth::attempt($credentials)) {
+        if (! Auth::attempt($credentials)) {
             return response()->json([
                 'success' => false,
-                'errors' => ['password' => ['Password is incorrect.']]
+                'errors' => ['password' => ['Password is incorrect.']],
             ], 422);
         }
 
-        
         return response()->json([
             'success' => true,
             'message' => 'Login successful!',
@@ -103,14 +102,10 @@ class AuthController extends Controller
         ]);
     }
 
-        
-    
-
     public function logout()
     {
         Auth::logout();
 
-      
         return redirect('blogs')->with('success', ' Logged out successful');
     }
 }

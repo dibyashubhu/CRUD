@@ -27,8 +27,8 @@ class BlogController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'content' => 'required',
-            // 'blog_category_id' => 'required|exists:blog_categories,id',
-             'blog_category_id' => 'required',
+            'blog_category_id' => 'required|exists:blog_categories,id',
+            //  'blog_category_id' => 'required',
             'image' => 'nullable|image|max:2048'
         ]);
 

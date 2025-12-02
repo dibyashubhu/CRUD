@@ -7,4 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     //
+    protected $fillable = ['blog_id', 'user_id', 'comment'];
+
+    public function blog()
+    {
+        return $this->belongsTo(Blog::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function likes(){
+        return $this->hasMany(CommentLike::class);
+    }
+
+    public function isLikedByUser($userId){
+        return $this->likes()->where('user_id',$userId)->exists();
+    }
 }
